@@ -9,10 +9,9 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.get('/ping', (_req, res) => res.status(OK).json({ message: 'Pong' }));
+
 app.use('/users', userRouter);
-app.get('/ping', (req, res) => {
-  res.status(OK).json({ message: 'Pong' });
-});
 
 app.use(error);
 
