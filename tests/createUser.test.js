@@ -10,7 +10,7 @@ chai.use(chaiHttp);
 const server = require("../src/api/app");
 
 const {
-  StatusCodes: { CREATED },
+  StatusCodes: { CREATED, BAD_REQUEST },
 } = require("http-status-codes");
 
 describe("1 - Using the endPoint /users", () => {
@@ -53,25 +53,42 @@ describe("1 - Using the endPoint /users", () => {
 
     before(async () => {
       const connectionMock = await mock();
-
       sinon.stub(MongoClient, "connect").resolves(connectionMock);
-      response = await chai.request(server).post("/users").send({
-        name: "Silvinha Gianattasio",
-        email: "silvinha@trybe.com",
-        password: "123456",
-      });
     });
 
     after(async () => {
       MongoClient.connect.restore();
     });
 
-    it('Name is Required!', () => {
+    it('Name is Required!', async () => {
+      response = await chai.request(server).post("/users").send({
+        email: "silvinha@trybe.com",
+        password: "123456",
+      });
+      expect(response).to.have.status(BAD_REQUEST);
+      expect(response.body).to.be.a("object");
+      expect(response.body).to.have.property("message");
+      expect(response.body.message).to.be.equal("Algum dos campos está inválido");
     })
-    it('Email is Required!', () => {
+    it('Email is Required!', async () => {
+      response = await chai.request(server).post("/users").send({
+        name: "Silvinha Gianattasio",
+        password: "123456",
+      });
+      expect(response).to.have.status(BAD_REQUEST);
+      expect(response.body).to.be.a("object");
+      expect(response.body).to.have.property("message");
+      expect(response.body.message).to.be.equal("Algum dos campos está inválido");
     })
-    it('Password is Required!', () => {
-
+    it('Password is Required!', async () => {
+      response = await chai.request(server).post("/users").send({
+        name: "Silvinha Gianattasio",
+        email: "silvinha@trybe.com",
+      });
+      expect(response).to.have.status(BAD_REQUEST);
+      expect(response.body).to.be.a("object");
+      expect(response.body).to.have.property("message");
+      expect(response.body.message).to.be.equal("Algum dos campos está inválido");
     })
   })
 });
