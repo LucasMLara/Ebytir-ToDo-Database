@@ -4,19 +4,21 @@
   "description": "This is MongoDB Database for 'To-do List' Application for Ebytir selection Process while i'm student at Trybe",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node ./src/api/server.js",
     "test": "mocha ./tests/**/*$NAME*.test.js --exit",
-    "dev": "nodemon server.js"
+    "dev": "clear && nodemon ./src/api/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.25.2",
     "mocha": "^9.1.3",
+    "mongodb-memory-server": "^6.9.6",
     "nodemon": "^2.0.14",
     "sinon": "^11.1.2"
   },
