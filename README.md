@@ -16,7 +16,7 @@
 # Sobre o Projeto!
 Este repositório armazena a lógica do banco de dados da aplicação! Trata-se de uma ferramenta para armazenar e buscar os dados das tarefas adicionadas ou concluídas pelo usuário
 
-## Técnologias usadas
+## Tecnologias usadas
 
 Back-end:
 > Desenvolvido usando: NodeJS, ExpressJS, MongoDB, ES6, mocha, chai, sinon, mongodb-memory-server
