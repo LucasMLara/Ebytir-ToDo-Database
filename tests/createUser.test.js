@@ -3,7 +3,7 @@ const { expect } = chai;
 const chaiHttp = require("chai-http");
 const sinon = require("sinon");
 const { MongoClient } = require("mongodb");
-const { MongoMemoryServer } = require("mongodb-memory-server");
+const mock = require('./mockConnection')
 
 chai.use(chaiHttp);
 
@@ -13,28 +13,23 @@ const {
   StatusCodes: { CREATED },
 } = require("http-status-codes");
 
-describe("Using the endPoint /users", () => {
-  describe("when a new user is created", () => {
+describe("1 - Using the endPoint /users", () => {
+  describe("When a new user is created", () => {
     let response = {};
-    const DBserver = new MongoMemoryServer();
 
     before(async () => {
-      const URLMock = await DBserver.getUri();
-      const connectionMock = await MongoClient.connect(URLMock, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
+      const connectionMock = await mock();
 
       sinon.stub(MongoClient, "connect").resolves(connectionMock);
       response = await chai.request(server).post("/users").send({
-        name: "Maria Gabriela",
+        name: "Silvinha Gianattasio",
+        email: "silvinha@trybe.com",
         password: "123456",
       });
     });
 
     after(async () => {
       MongoClient.connect.restore();
-      await DBserver.stop();
     });
 
     it('returns Status HTTP 201 - "Created"', () => {
@@ -52,4 +47,31 @@ describe("Using the endPoint /users", () => {
       expect(response.body.message).to.be.equal("Novo Usuário Cadastrado");
     });
   });
+
+  describe('1.1 - Check new User Inputs', () => {
+    let response = {};
+
+    before(async () => {
+      const connectionMock = await mock();
+
+      sinon.stub(MongoClient, "connect").resolves(connectionMock);
+      response = await chai.request(server).post("/users").send({
+        name: "Silvinha Gianattasio",
+        email: "silvinha@trybe.com",
+        password: "123456",
+      });
+    });
+
+    after(async () => {
+      MongoClient.connect.restore();
+    });
+
+    it('Name is Required!', () => {
+    })
+    it('Email is Required!', () => {
+    })
+    it('Password is Required!', () => {
+
+    })
+  })
 });
