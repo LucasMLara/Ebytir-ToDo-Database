@@ -6,7 +6,7 @@ const Schema = require('../validations/schema');
 const checkNewUserEntries = async (req, _res, next) => {
   const { name, email, password } = req.body;
   const { error } = Schema.userSchema.validate({ name, email, password });
-  if (error) next({ message: 'Algum dos campos está inválido', statusCode: BAD_REQUEST });
+  if (error) next({ message: 'Algum dos campos está faltoso ou inválido', statusCode: BAD_REQUEST });
   next();
 };
 

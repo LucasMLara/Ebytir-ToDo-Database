@@ -68,7 +68,7 @@ describe("1 - Using the endPoint /users", () => {
       expect(response).to.have.status(BAD_REQUEST);
       expect(response.body).to.be.a("object");
       expect(response.body).to.have.property("message");
-      expect(response.body.message).to.be.equal("Algum dos campos está inválido");
+      expect(response.body.message).to.be.equal("Algum dos campos está faltoso ou inválido");
     })
     it('Email is Required!', async () => {
       response = await chai.request(server).post("/users").send({
@@ -78,7 +78,7 @@ describe("1 - Using the endPoint /users", () => {
       expect(response).to.have.status(BAD_REQUEST);
       expect(response.body).to.be.a("object");
       expect(response.body).to.have.property("message");
-      expect(response.body.message).to.be.equal("Algum dos campos está inválido");
+      expect(response.body.message).to.be.equal("Algum dos campos está faltoso ou inválido");
     })
     it('Password is Required!', async () => {
       response = await chai.request(server).post("/users").send({
@@ -88,7 +88,7 @@ describe("1 - Using the endPoint /users", () => {
       expect(response).to.have.status(BAD_REQUEST);
       expect(response.body).to.be.a("object");
       expect(response.body).to.have.property("message");
-      expect(response.body.message).to.be.equal("Algum dos campos está inválido");
+      expect(response.body.message).to.be.equal("Algum dos campos está faltoso ou inválido");
     })
   })
 });
