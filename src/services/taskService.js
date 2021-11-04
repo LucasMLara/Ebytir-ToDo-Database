@@ -1,5 +1,5 @@
 const {
-  createTask, getlAllTasks, getTask, updateTask,
+  createTask, getlAllTasks, getTask, updateTask, removeTask,
 } = require('../models/tasksModel');
 
 const createNewTask = async (task, id) => {
@@ -22,9 +22,14 @@ const updateSingleTask = async (id, task) => {
   return result;
 };
 
+const remove = async (id) => {
+  await removeTask(id);
+};
+
 module.exports = {
   createNewTask,
   getTasks,
   getSingleTask,
   updateSingleTask,
+  remove,
 };
