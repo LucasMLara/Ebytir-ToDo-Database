@@ -1,7 +1,7 @@
 const { StatusCodes: { CREATED, INTERNAL_SERVER_ERROR, OK } } = require('http-status-codes');
 const moment = require('moment');
 
-const { createNewTask, getTasks } = require('../services/taskService');
+const { createNewTask, getTasks, getSingleTask } = require('../services/taskService');
 
 const createTask = async (req, res, next) => {
   try {
@@ -31,7 +31,18 @@ const getAllTasks = async (_req, res, next) => {
   }
 };
 
+const getTaskById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const task = await getSingleTask(id);
+    res.status(OK).json(task);
+  } catch (e) {
+    next({ statusCode: INTERNAL_SERVER_ERROR, message: e.message });
+  }
+};
+
 module.exports = {
   createTask,
   getAllTasks,
+  getTaskById,
 };

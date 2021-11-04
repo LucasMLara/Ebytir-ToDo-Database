@@ -1,4 +1,5 @@
 const moment = require('moment');
+const { ObjectId } = require('mongodb');
 const connection = require('./connection');
 
 const createTask = async (task, userId) => {
@@ -18,7 +19,14 @@ const getlAllTasks = async () => {
   return tasks;
 };
 
+const getTask = async (id) => {
+  const db = await connection();
+  const task = await db.collection('tasks').findOne(ObjectId(id));
+  return task;
+};
+
 module.exports = {
   createTask,
   getlAllTasks,
+  getTask,
 };
