@@ -17,8 +17,8 @@ const createNewUser = async (user) => {
 
 const login = async (data) => {
   const user = await findOnebyEmail(data.email);
-  const { email, _id } = user;
-  const token = sign({ email, _id }, SECRET, jwtConfig);
+  const { email, _id, name } = user;
+  const token = sign({ email, _id, name }, SECRET, jwtConfig);
   return { token };
 };
 
