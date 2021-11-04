@@ -99,7 +99,7 @@ describe("1 - Using the endPoint /users", () => {
   });
 });
 
-describe.only("2 - Using the endPoint /login", () => {
+describe("2 - Using the endPoint /login", () => {
   describe("When the user try to log in on Application", () => {
     before(async () => {
       const connectionMock = await mock();
@@ -125,7 +125,7 @@ describe.only("2 - Using the endPoint /login", () => {
     expect(response).to.have.status(BAD_REQUEST);
     expect(response.body).to.be.a("object");
     expect(response.body).to.have.property("message");
-    expect(response.body.message).to.be.equal("Email is Required");
+    expect(response.body.message).to.be.equal("\"email\" is required");
   });
   
   // it("With invalid email", async () => {
@@ -139,7 +139,7 @@ describe.only("2 - Using the endPoint /login", () => {
     expect(response).to.have.status(BAD_REQUEST);
     expect(response.body).to.be.a("object");
     expect(response.body).to.have.property("message");
-    expect(response.body.message).to.be.equal("Password is Required");
+    expect(response.body.message).to.be.equal("\"password\" is required");
   });
   
   // it("With invalid password", () => {

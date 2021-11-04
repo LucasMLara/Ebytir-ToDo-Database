@@ -10,4 +10,11 @@ const checkNewUserEntries = async (req, _res, next) => {
   next();
 };
 
-module.exports = { checkNewUserEntries };
+const checkLogin = async (req, _res, next) => {
+  const { email, password } = req.body;
+  const { error } = Schema.loginSchema.validate({ email, password });
+  if (error) next({ message: error.message, statusCode: BAD_REQUEST });
+  next();
+};
+
+module.exports = { checkNewUserEntries, checkLogin };

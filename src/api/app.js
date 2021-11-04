@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { StatusCodes: { OK } } = require('http-status-codes');
 const userRouter = require('./routes/usersRouter');
+const loginRouter = require('./routes/loginRouter');
 const error = require('../middlewares/error');
 
 const app = express();
@@ -9,9 +9,8 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.get('/ping', (_req, res) => res.status(OK).json({ message: 'Pong' }));
-
 app.use('/users', userRouter);
+app.use('/login', loginRouter);
 
 app.use(error);
 

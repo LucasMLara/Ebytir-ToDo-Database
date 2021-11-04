@@ -6,6 +6,13 @@ const createUser = async (user) => {
   return { ID: result.insertedId, user, role: 'user' };
 };
 
+const findOnebyEmail = async (email) => {
+  const db = await connection();
+  const result = await db.collection('users').findOne({ email });
+  return result;
+};
+
 module.exports = {
   createUser,
+  findOnebyEmail,
 };

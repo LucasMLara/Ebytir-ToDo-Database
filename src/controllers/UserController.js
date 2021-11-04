@@ -1,4 +1,4 @@
-const { StatusCodes: { CREATED, INTERNAL_SERVER_ERROR } } = require('http-status-codes');
+const { StatusCodes: { CREATED, INTERNAL_SERVER_ERROR, OK } } = require('http-status-codes');
 
 const userService = require('../services/userService');
 
@@ -12,6 +12,17 @@ const createUser = async (req, res, next) => {
   }
 };
 
+const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const token = await userService.login({ email, password });
+    res.status(OK).json(token);
+  } catch (e) {
+    next({ statusCode: INTERNAL_SERVER_ERROR, message: e.message });
+  }
+};
+
 module.exports = {
   createUser,
+  login,
 };
