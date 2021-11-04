@@ -1,4 +1,6 @@
-const { createTask, getlAllTasks, getTask } = require('../models/tasksModel');
+const {
+  createTask, getlAllTasks, getTask, updateTask,
+} = require('../models/tasksModel');
 
 const createNewTask = async (task, id) => {
   const result = await createTask(task, id);
@@ -15,8 +17,14 @@ const getSingleTask = async (id) => {
   return result;
 };
 
+const updateSingleTask = async (id, task) => {
+  const result = await updateTask(id, task);
+  return result;
+};
+
 module.exports = {
   createNewTask,
   getTasks,
   getSingleTask,
+  updateSingleTask,
 };

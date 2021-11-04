@@ -21,12 +21,23 @@ const getlAllTasks = async () => {
 
 const getTask = async (id) => {
   const db = await connection();
-  const task = await db.collection('tasks').findOne(ObjectId(id));
+  const task = await db.collection('tasks').findOne(new ObjectId(id));
   return task;
+};
+
+const updateTask = async (id, task) => {
+  const db = await connection();
+  await db.collection('tasks').updateOne(
+    { _id: ObjectId(id) },
+    { $set: { ...task } },
+  );
+  const taskUpdated = await db.collection('tasks').findOne(new ObjectId(id));
+  return taskUpdated;
 };
 
 module.exports = {
   createTask,
   getlAllTasks,
   getTask,
+  updateTask,
 };
