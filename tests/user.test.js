@@ -10,7 +10,7 @@ chai.use(chaiHttp);
 const server = require("../src/api/app");
 
 const {
-  StatusCodes: { CREATED, BAD_REQUEST, OK },
+  StatusCodes: { CREATED, BAD_REQUEST, OK, UNAUTHORIZED },
 } = require("http-status-codes");
 
 describe("1 - Using the endPoint /users", () => {
@@ -22,7 +22,7 @@ describe("1 - Using the endPoint /users", () => {
 
       sinon.stub(MongoClient, "connect").resolves(connectionMock);
       response = await chai.request(server).post("/users").send({
-        name: "Silvinha Gianattasio",
+        name: "Silvinha Giannattasio",
         email: "silvinha@trybe.com",
         password: "123456",
       });
@@ -74,7 +74,7 @@ describe("1 - Using the endPoint /users", () => {
     });
     it("Email is Required!", async () => {
       response = await chai.request(server).post("/users").send({
-        name: "Silvinha Gianattasio",
+        name: "Silvinha Giannattasio",
         password: "123456",
       });
       expect(response).to.have.status(BAD_REQUEST);
@@ -86,7 +86,7 @@ describe("1 - Using the endPoint /users", () => {
     });
     it("Password is Required!", async () => {
       response = await chai.request(server).post("/users").send({
-        name: "Silvinha Gianattasio",
+        name: "Silvinha Giannattasio",
         email: "silvinha@trybe.com",
       });
       expect(response).to.have.status(BAD_REQUEST);
@@ -104,6 +104,7 @@ describe("2 - Using the endPoint /login", () => {
     before(async () => {
       const connectionMock = await mock();
       sinon.stub(MongoClient, "connect").resolves(connectionMock);
+      connectionMock.db('ToDoList_Ebytir').collection('users').insertOne({ name: "Silvinha Giannattasio",  email: "silvinha@trybe.com", password: "123456" });
     });
 
     after(async () => {
@@ -128,9 +129,16 @@ describe("2 - Using the endPoint /login", () => {
     expect(response.body.message).to.be.equal("\"email\" is required");
   });
   
-  // it("With invalid email", async () => {
-
-  // });
+  it("With invalid email", async () => {
+    let response = await chai.request(server).post("/login").send({
+      email: "silvinha@8.com",
+      password: "123456",
+    });
+    expect(response).to.have.status(UNAUTHORIZED);
+    expect(response.body).to.be.a("object");
+    expect(response.body).to.have.property("message");
+    expect(response.body.message).to.be.equal("\"email\" is invalid");
+  });
 
   it("When the password is missing ", async () => {
     let response = await chai.request(server).post("/login").send({
@@ -142,7 +150,14 @@ describe("2 - Using the endPoint /login", () => {
     expect(response.body.message).to.be.equal("\"password\" is required");
   });
   
-  // it("With invalid password", () => {
-
-  // });
+  it("With invalid password", async () => {
+    let response = await chai.request(server).post("/login").send({
+      email: "silvinha@trybe.com",
+      password: "123",
+    });
+    expect(response).to.have.status(UNAUTHORIZED);
+    expect(response.body).to.be.a("object");
+    expect(response.body).to.have.property("message");
+    expect(response.body.message).to.be.equal("\"password\" is invalid");
+  });
 });
