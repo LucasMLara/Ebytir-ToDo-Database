@@ -13,7 +13,6 @@ const createTask = async (task, userId) => {
 };
 
 const getlAllTasks = async () => {
-  console.log('model');
   const db = await connection();
   const tasks = await db.collection('tasks').find().toArray();
   return tasks;

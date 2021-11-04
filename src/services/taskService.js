@@ -6,7 +6,6 @@ const createNewTask = async (task, id) => {
 };
 
 const getTasks = async () => {
-  console.log('Service');
   const result = await getlAllTasks();
   return result;
 };
