@@ -10,10 +10,10 @@ chai.use(chaiHttp);
 const server = require("../src/api/app");
 
 const {
-  StatusCodes: { CREATED, BAD_REQUEST, OK, UNAUTHORIZED },
+  StatusCodes: { CREATED, BAD_REQUEST, OK, UNAUTHORIZED, CONFLICT },
 } = require("http-status-codes");
 
-describe("1 - Using the endPoint /users", () => {
+describe.only("1 - Using the endPoint /users", () => {
   describe("When a new user is created", () => {
     let response = {};
 
@@ -45,6 +45,37 @@ describe("1 - Using the endPoint /users", () => {
     });
     it('and the message is: "Novo Usuário Cadastrado"', () => {
       expect(response.body.message).to.be.equal("New User Created");
+    });
+  });
+
+  describe("Check if User is Unique", () => {
+    let response = {};
+
+    before(async () => {
+      const connectionMock = await mock();
+
+      sinon.stub(MongoClient, "connect").resolves(connectionMock);
+      await chai.request(server).post("/users").send({
+        name: "Silvinha Giannattasio",
+        email: "silvinha@trybe.com",
+        password: "123456",
+      });
+    });
+
+    after(async () => {
+      MongoClient.connect.restore();
+    });
+
+    it('returns Status HTTP 409 - "Conflict"', async () => {
+      response = await chai.request(server).post("/users").send({
+        name: "Silvinha Giannattasio",
+        email: "silvinha@trybe.com",
+        password: "123456",
+      });
+      expect(response).to.have.status(CONFLICT);
+      expect(response.body).to.be.a("object");
+      expect(response.body).to.have.property("message");
+      expect(response.body.message).to.be.equal("User already exists");
     });
   });
 
@@ -98,14 +129,11 @@ describe("2 - Using the endPoint /login", () => {
     before(async () => {
       const connectionMock = await mock();
       sinon.stub(MongoClient, "connect").resolves(connectionMock);
-      connectionMock
-        .db("ToDoList_Ebytir")
-        .collection("users")
-        .insertOne({
-          name: "Silvinha Giannattasio",
-          email: "silvinha@trybe.com",
-          password: "123456",
-        });
+      connectionMock.db("ToDoList_Ebytir").collection("users").insertOne({
+        name: "Silvinha Giannattasio",
+        email: "silvinha@trybe.com",
+        password: "123456",
+      });
     });
 
     after(async () => {
