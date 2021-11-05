@@ -10,8 +10,8 @@ const router = Router();
 router.use(Auth);
 
 router.post('/', checkTaskEntries, createTask);
+router.get('/:id', checkIfPostsExists, getTaskById);
 router.get('/', getAllTasks);
-router.get('/:id', getTaskById);
 router.put('/:id', checkIfPostsExists, checkTaskEntries, updateTask);
 router.delete('/:id', checkIfPostsExists, deleteTask);
 

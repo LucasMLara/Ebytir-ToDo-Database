@@ -22,8 +22,8 @@ describe("1 - Using the endPoint /users", () => {
 
       sinon.stub(MongoClient, "connect").resolves(connectionMock);
       response = await chai.request(server).post("/users").send({
-        name: "Silvinha Giannattasio",
-        email: "silvinha@trybe.com",
+        name: "Mari Drummond",
+        email: "mari@trybe.com",
         password: "123456",
       });
     });

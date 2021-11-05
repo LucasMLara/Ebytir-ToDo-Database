@@ -20,6 +20,7 @@ const getlAllTasks = async () => {
 };
 
 const getTask = async (id) => {
+  if (!ObjectId.isValid(id)) return null;
   const db = await connection();
   const task = await db.collection('tasks').findOne(new ObjectId(id));
   return task;
