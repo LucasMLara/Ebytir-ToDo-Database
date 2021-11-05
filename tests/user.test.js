@@ -13,7 +13,7 @@ const {
   StatusCodes: { CREATED, BAD_REQUEST, OK, UNAUTHORIZED, CONFLICT },
 } = require("http-status-codes");
 
-describe.only("1 - Using the endPoint /users", () => {
+describe("1 - Using the endPoint /users", () => {
   describe("When a new user is created", () => {
     let response = {};
 
