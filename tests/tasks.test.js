@@ -40,7 +40,7 @@ describe("3 - Using the endPoint POST /tasks", () => {
 
     after(async () => MongoClient.connect.restore());
 
-    it('returns Status HTTP 201 - "Created"', async () => {
+    it.only('returns Status HTTP 201 - "Created"', async () => {
       response = await chai.request(server).post("/tasks")
         .set({
           "Authorization": Authorization
@@ -50,6 +50,14 @@ describe("3 - Using the endPoint POST /tasks", () => {
           content: "This is Silvinha!",
         });
       expect(response).to.have.status(CREATED);
+      expect(response.body).to.be.a("object");
+      expect(response.body).to.have.property("NewTaskAdded");
+      expect(response.body.NewTaskAdded).to.have.property("createdAt");
+      expect(response.body.NewTaskAdded).includes({
+        title: 'Best Faciliatora of the World',
+        content: 'This is Silvinha!',
+        createdBy: 'Silvinha Giannattasio',
+      })
     });
     it("return an Object", async () => {
       response = await chai.request(server).post("/tasks")
@@ -90,7 +98,7 @@ describe("3 - Using the endPoint POST /tasks", () => {
     
     after(async () => MongoClient.connect.restore());
 
-    it('User is not Authenticated', () => {
+    it('User is not Authenticated', async () => {
       response = await chai.request(server).post("/tasks")
         .send({
           title: "Best Facilitadora of the World",
@@ -162,7 +170,7 @@ describe("3 - Using the endPoint POST /tasks", () => {
 
   // ____________________________________________PUT_
 
-  describe('When a task is edited with success => ', () => {
+  describe('Using the endPoint PUT /tasks => ', () => {
     let response = {};
     let Authorization;
 
@@ -188,7 +196,7 @@ describe("3 - Using the endPoint POST /tasks", () => {
     
     after(async () => MongoClient.connect.restore());
 
-    it('User is not Authenticated', () => {
+    it('User is not Authenticated', async () => {
       response = await chai.request(server).put("/tasks:id")
         .send({
           title: "Best Facilitadora of the World",
@@ -271,11 +279,10 @@ describe("3 - Using the endPoint POST /tasks", () => {
       expect(response.body).to.have.property("message");
       expect(response.body.message).to.be.equal("\"content\" is empty");
     });
-  }
-  
+  })
 
   // _________________GET ALL AND GET BY ID
-  describe('Can get All Tasks and a single Task => ', () => {
+  describe('Using the endPoint GET /tasks => ', () => {
     let response = {};
     let Authorization;
 
@@ -304,7 +311,7 @@ describe("3 - Using the endPoint POST /tasks", () => {
       it('User is not Authenticated', async () => {
         response = await chai.request(server).get("/tasks")
           expect(response).to.have.status(UNAUTHORIZED);
-          expect(response.body).to.be.a("object");
+          expect(response.body).to.be.an("object");
           expect(response.body).to.have.property("message");
           expect(response.body.message).to.be.equal("Unauthorized User");
       })
@@ -315,6 +322,9 @@ describe("3 - Using the endPoint POST /tasks", () => {
             "Authorization": Authorization
           })
           expect(response).to.have.status(OK);
+          expect(response.body).to.be.a("array");
+          const tasks = response.body;
+          tasks.forEach((task) => expect(task).to.be.an("object"))
       });
 
       it('is Not Possible get a taks that doesnt exist', async () => {
@@ -380,9 +390,6 @@ describe("3 - Using the endPoint POST /tasks", () => {
           "Authorization": Authorization
         });
       expect(response).to.have.status(NO_CONTENT);
-      expect(response.body).to.be.a("object");
-      expect(response.body).to.have.property("message");
-      expect(response.body.message).to.be.equal("\"content\" is required");
     });
   });
 });
