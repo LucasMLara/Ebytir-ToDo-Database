@@ -44,12 +44,12 @@ describe("1 - Using the endPoint /users", () => {
       expect(response.body).to.have.property("message");
     });
     it('and the message is: "Novo Usuário Cadastrado"', () => {
-      expect(response.body.message).to.be.equal("Novo Usuário Cadastrado");
+      expect(response.body.message).to.be.equal("New User Created");
     });
   });
 
   describe("1.1 - Check new User Inputs", () => {
-    let response = {};
+    let response;
 
     before(async () => {
       const connectionMock = await mock();
@@ -118,7 +118,9 @@ describe("2 - Using the endPoint /login", () => {
       password: "123456",
     });
     expect(response).to.have.status(OK);
+    expect(response.body.token).not.to.be.null
   });
+
   it("When the email is missing", async () => {
     let response = await chai.request(server).post("/login").send({
       password: "123456",
@@ -129,17 +131,7 @@ describe("2 - Using the endPoint /login", () => {
     expect(response.body.message).to.be.equal("\"email\" is required");
   });
   
-  it("With invalid email", async () => {
-    let response = await chai.request(server).post("/login").send({
-      email: "silvinha@8.com",
-      password: "123456",
-    });
-    expect(response).to.have.status(UNAUTHORIZED);
-    expect(response.body).to.be.a("object");
-    expect(response.body).to.have.property("message");
-    expect(response.body.message).to.be.equal("\"email\" is invalid");
-  });
-
+  
   it("When the password is missing ", async () => {
     let response = await chai.request(server).post("/login").send({
       email: "silvinha@trybe.com",
@@ -150,6 +142,17 @@ describe("2 - Using the endPoint /login", () => {
     expect(response.body.message).to.be.equal("\"password\" is required");
   });
   
+  it("With invalid email", async () => {
+    let response = await chai.request(server).post("/login").send({
+      email: "silvinha@8.com",
+      password: "123456",
+    });
+    expect(response).to.have.status(UNAUTHORIZED);
+    expect(response.body).to.be.a("object");
+    expect(response.body).to.have.property("message");
+    expect(response.body.message).to.be.equal("Incorrect username or password");
+  });
+  
   it("With invalid password", async () => {
     let response = await chai.request(server).post("/login").send({
       email: "silvinha@trybe.com",
@@ -158,6 +161,6 @@ describe("2 - Using the endPoint /login", () => {
     expect(response).to.have.status(UNAUTHORIZED);
     expect(response.body).to.be.a("object");
     expect(response.body).to.have.property("message");
-    expect(response.body.message).to.be.equal("\"password\" is invalid");
+    expect(response.body.message).to.be.equal("Incorrect username or password");
   });
 });
