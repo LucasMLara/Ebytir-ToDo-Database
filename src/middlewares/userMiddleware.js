@@ -1,5 +1,5 @@
 const {
-  StatusCodes: { BAD_REQUEST, UNAUTHORIZED },
+  StatusCodes: { BAD_REQUEST, UNAUTHORIZED, CONFLICT },
 } = require('http-status-codes');
 const Schema = require('../validations/schema');
 const { findOnebyEmail } = require('../models/userModel');
@@ -7,7 +7,9 @@ const { findOnebyEmail } = require('../models/userModel');
 const checkNewUserEntries = async (req, _res, next) => {
   const { name, email, password } = req.body;
   const { error } = Schema.userSchema.validate({ name, email, password });
-  if (error) next({ message: 'Algum dos campos está faltoso ou inválido', statusCode: BAD_REQUEST });
+  if (error) next({ message: error.message, statusCode: BAD_REQUEST });
+  const userExists = await findOnebyEmail(email);
+  if (userExists) next({ message: 'User already exists', statusCode: CONFLICT });
   next();
 };
 
