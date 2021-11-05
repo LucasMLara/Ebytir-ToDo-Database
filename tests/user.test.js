@@ -68,9 +68,7 @@ describe("1 - Using the endPoint /users", () => {
       expect(response).to.have.status(BAD_REQUEST);
       expect(response.body).to.be.a("object");
       expect(response.body).to.have.property("message");
-      expect(response.body.message).to.be.equal(
-        "Algum dos campos está faltoso ou inválido"
-      );
+      expect(response.body.message).to.be.equal("Name is required");
     });
     it("Email is Required!", async () => {
       response = await chai.request(server).post("/users").send({
@@ -80,9 +78,7 @@ describe("1 - Using the endPoint /users", () => {
       expect(response).to.have.status(BAD_REQUEST);
       expect(response.body).to.be.a("object");
       expect(response.body).to.have.property("message");
-      expect(response.body.message).to.be.equal(
-        "Algum dos campos está faltoso ou inválido"
-      );
+      expect(response.body.message).to.be.equal("Email is required");
     });
     it("Password is Required!", async () => {
       response = await chai.request(server).post("/users").send({
@@ -92,9 +88,7 @@ describe("1 - Using the endPoint /users", () => {
       expect(response).to.have.status(BAD_REQUEST);
       expect(response.body).to.be.a("object");
       expect(response.body).to.have.property("message");
-      expect(response.body.message).to.be.equal(
-        "Algum dos campos está faltoso ou inválido"
-      );
+      expect(response.body.message).to.be.equal("Password is required");
     });
   });
 });
@@ -104,63 +98,95 @@ describe("2 - Using the endPoint /login", () => {
     before(async () => {
       const connectionMock = await mock();
       sinon.stub(MongoClient, "connect").resolves(connectionMock);
-      connectionMock.db('ToDoList_Ebytir').collection('users').insertOne({ name: "Silvinha Giannattasio",  email: "silvinha@trybe.com", password: "123456" });
+      connectionMock
+        .db("ToDoList_Ebytir")
+        .collection("users")
+        .insertOne({
+          name: "Silvinha Giannattasio",
+          email: "silvinha@trybe.com",
+          password: "123456",
+        });
     });
 
     after(async () => {
       MongoClient.connect.restore();
     });
-  });
 
-  it("Successfuly Login", async () => {
-    let response = await chai.request(server).post("/login").send({
-      email: "silvinha@trybe.com",
-      password: "123456",
+    it("Successfuly Login", async () => {
+      let response = await chai.request(server).post("/login").send({
+        email: "silvinha@trybe.com",
+        password: "123456",
+      });
+      expect(response).to.have.status(OK);
+      expect(response.body.token).not.to.be.null;
     });
-    expect(response).to.have.status(OK);
-    expect(response.body.token).not.to.be.null
-  });
 
-  it("When the email is missing", async () => {
-    let response = await chai.request(server).post("/login").send({
-      password: "123456",
+    it("When the email is missing", async () => {
+      let response = await chai.request(server).post("/login").send({
+        password: "123456",
+      });
+      expect(response).to.have.status(BAD_REQUEST);
+      expect(response.body).to.be.a("object");
+      expect(response.body).to.have.property("message");
+      expect(response.body.message).to.be.equal("Email is required");
     });
-    expect(response).to.have.status(BAD_REQUEST);
-    expect(response.body).to.be.a("object");
-    expect(response.body).to.have.property("message");
-    expect(response.body.message).to.be.equal("\"email\" is required");
-  });
-  
-  
-  it("When the password is missing ", async () => {
-    let response = await chai.request(server).post("/login").send({
-      email: "silvinha@trybe.com",
+
+    it("When the email is empty", async () => {
+      let response = await chai.request(server).post("/login").send({
+        email: "",
+        password: "123456",
+      });
+      expect(response).to.have.status(BAD_REQUEST);
+      expect(response.body).to.be.a("object");
+      expect(response.body).to.have.property("message");
+      expect(response.body.message).to.be.equal("Email must not be empty");
     });
-    expect(response).to.have.status(BAD_REQUEST);
-    expect(response.body).to.be.a("object");
-    expect(response.body).to.have.property("message");
-    expect(response.body.message).to.be.equal("\"password\" is required");
-  });
-  
-  it("With invalid email", async () => {
-    let response = await chai.request(server).post("/login").send({
-      email: "silvinha@8.com",
-      password: "123456",
+
+    it("When the password is empty", async () => {
+      let response = await chai.request(server).post("/login").send({
+        email: "silvinha@trybe.com",
+        password: "",
+      });
+      expect(response).to.have.status(BAD_REQUEST);
+      expect(response.body).to.be.a("object");
+      expect(response.body).to.have.property("message");
+      expect(response.body.message).to.be.equal("Password must not be empty");
     });
-    expect(response).to.have.status(UNAUTHORIZED);
-    expect(response.body).to.be.a("object");
-    expect(response.body).to.have.property("message");
-    expect(response.body.message).to.be.equal("Incorrect username or password");
-  });
-  
-  it("With invalid password", async () => {
-    let response = await chai.request(server).post("/login").send({
-      email: "silvinha@trybe.com",
-      password: "123",
+
+    it("When the password is missing ", async () => {
+      let response = await chai.request(server).post("/login").send({
+        email: "silvinha@trybe.com",
+      });
+      expect(response).to.have.status(BAD_REQUEST);
+      expect(response.body).to.be.a("object");
+      expect(response.body).to.have.property("message");
+      expect(response.body.message).to.be.equal("Password is required");
     });
-    expect(response).to.have.status(UNAUTHORIZED);
-    expect(response.body).to.be.a("object");
-    expect(response.body).to.have.property("message");
-    expect(response.body.message).to.be.equal("Incorrect username or password");
+
+    it("With invalid email", async () => {
+      let response = await chai.request(server).post("/login").send({
+        email: "silvinha@8.com",
+        password: "123456",
+      });
+      expect(response).to.have.status(UNAUTHORIZED);
+      expect(response.body).to.be.a("object");
+      expect(response.body).to.have.property("message");
+      expect(response.body.message).to.be.equal(
+        "Incorrect username or password"
+      );
+    });
+
+    it("With invalid password", async () => {
+      let response = await chai.request(server).post("/login").send({
+        email: "silvinha@trybe.com",
+        password: "123",
+      });
+      expect(response).to.have.status(UNAUTHORIZED);
+      expect(response.body).to.be.a("object");
+      expect(response.body).to.have.property("message");
+      expect(response.body.message).to.be.equal(
+        "Incorrect username or password"
+      );
+    });
   });
 });
